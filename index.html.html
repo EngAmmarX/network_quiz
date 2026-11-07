@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار علي أساسيات الشبكات</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --secondary-color: #0b5ed7;
+      --dark-navy: #0f172a;
+      --accent-color: #06b6d4;
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      color: #f8fafc;
+      padding-bottom: 50px;
+    }
+
+    .main-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .header-banner {
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+      border-radius: 20px 20px 0 0;
+      padding: 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    .form-control, .form-select {
+      background-color: rgba(15, 23, 42, 0.6);
+      border: 1px solid #334155;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background-color: rgba(15, 23, 42, 0.9);
+      border-color: var(--accent-color);
+      color: #fff;
+      box-shadow: 0 0 0 0.25rem rgba(6, 182, 212, 0.25);
+    }
+
+    .question-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid #334155;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .form-check-input:checked {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    /* لعبة التوصيل */
+    .matching-box {
+      background: rgba(30, 41, 59, 0.9);
+      border: 2px dashed #475569;
+      border-radius: 12px;
+      padding: 15px;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .matching-box.active-target {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .drag-item {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      user-select: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+
+    .drag-item.selected {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-custom {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4);
+      color: white;
+    }
+
+    .admin-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 8px;
+      padding: 6px 12px;
+    }
+
+    .footer-credits {
+      text-align: center;
+      margin-top: 30px;
+      font-weight: bold;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      
+      <div class="main-card overflow-hidden">
+        
+        <!-- Header Banner -->
+        <div class="header-banner">
+          <button class="btn btn-sm admin-btn" onclick="openAdminModal()">
+            <i class="fa-solid fa-user-shield me-1"></i> دخول الأدمن
+          </button>
+          <h2 class="fw-bold mb-2"><i class="fa-solid fa-network-wired me-2"></i>اختبار علي أساسيات الشبكات</h2>
+          <p class="mb-0 text-light opacity-75">اختبر معلوماتك في المفاهيم الأساسية، أنواع الشبكات، والأجهزة</p>
+        </div>
+
+        <div class="p-4 p-md-5">
+          
+          <!-- Registration Form -->
+          <form id="quizForm" onsubmit="handleFormSubmit(event)">
+            
+            <h4 class="text-info fw-bold mb-4"><i class="fa-solid fa-id-card me-2"></i>بيانات الطالب</h4>
+            
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label">الاسم الثلاثي <span class="text-danger">*</span></label>
+                <input type="text" id="studentName" class="form-control" required placeholder="أدخل اسمك الثلاثي">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">الفرقة الدراسية <span class="text-danger">*</span></label>
+                <select id="studentGrade" class="form-select" required>
+                  <option value="" selected disabled>اختر الفرقة...</option>
+                  <option value="الفرقة الأولى">الفرقة الأولى</option>
+                  <option value="الفرقة الثانية">الفرقة الثانية</option>
+                  <option value="الفرقة الثالثة">الفرقة الثالثة</option>
+                  <option value="الفرقة الرابعة">الفرقة الرابعة</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">الشعبة <span class="text-danger">*</span></label>
+                <select id="studentDept" class="form-select" required>
+                  <option value="" selected disabled>اختر الشعبة...</option>
+                  <option value="نظم ومعلومات">نظم ومعلومات</option>
+                  <option value="علوم الحاسب والذكاء الاصطناعي">علوم الحاسب والذكاء الاصطناعي</option>
+                  <option value="المحاسبة والمراجعة">المحاسبة والمراجعة</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">الفرع <span class="text-danger">*</span></label>
+                <select id="studentBranch" class="form-select" required>
+                  <option value="" selected disabled>اختر الفرع...</option>
+                  <option value="رئيسي">رئيسي</option>
+                  <option value="فرع">فرع</option>
+                </select>
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label">رقم الهاتف <span class="text-danger">*</span></label>
+                <input type="tel" id="studentPhone" class="form-control" required placeholder="01xxxxxxxx">
+              </div>
+            </div>
+
+            <hr class="my-5 border-secondary">
+
+            <!-- Quiz Questions Section -->
+            <h4 class="text-info fw-bold mb-4"><i class="fa-solid fa-list-check me-2"></i>أسئلة الاختبار</h4>
+
+            <!-- Q1 -->
+            <div class="question-card">
+              <h5 class="fw-bold text-warning mb-3">1. ما هو التعريف الأقرب والأشمل لشبكة الكمبيوتر (Computer Network)؟</h5>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q1" value="A" id="q1a" required>
+                <label class="form-check-label" for="q1a">مجموعة من الأجهزة المتصلة ببعضها لمشاركة البيانات والموارد.</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q1" value="B" id="q1b">
+                <label class="form-check-label" for="q1b">جهاز واحد يستخدم لمعالجة النصوص والبيانات.</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q1" value="C" id="q1c">
+                <label class="form-check-label" for="q1c">برنامج يستخدم لتشغيل الألعاب الإلكترونية عبر الإنترنت.</label>
+              </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="question-card">
+              <h5 class="fw-bold text-warning mb-3">2. شبكة الربط الشخصية ذات المدى القصير جداً مثل البلوتوث (Bluetooth) تسمى:</h5>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q2" value="LAN" id="q2a" required>
+                <label class="form-check-label" for="q2a">LAN</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q2" value="PAN" id="q2b">
+                <label class="form-check-label" for="q2b">PAN</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q2" value="WAN" id="q2c">
+                <label class="form-check-label" for="q2c">WAN</label>
+              </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="question-card">
+              <h5 class="fw-bold text-warning mb-3">3. أي من أنواع الشبكات التالية تغطي شبكة على مستوى مدينة كاملة أو مجمع جامعي كبير؟</h5>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q3" value="MAN" id="q3a" required>
+                <label class="form-check-label" for="q3a">MAN</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q3" value="PAN" id="q3b">
+                <label class="form-check-label" for="q3b">PAN</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q3" value="LAN" id="q3c">
+                <label class="form-check-label" for="q3c">LAN</label>
+              </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="question-card">
+              <h5 class="fw-bold text-warning mb-3">4. ما هو الفرق الأساسي بين جهاز السويتش (Switch) والراوتر (Router)؟</h5>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q4" value="A" id="q4a" required>
+                <label class="form-check-label" for="q4a">السويتش يربط الأجهزة داخل نفس الشبكة المحلية، بينما الراوتر يربط شبكات مختلفة ببعضها وبالإنترنت.</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q4" value="B" id="q4b">
+                <label class="form-check-label" for="q4b">الراوتر يُستخدم للأجهزة السلكية فقط والسويتش للشبكات اللاسلكية.</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q4" value="C" id="q4c">
+                <label class="form-check-label" for="q4c">لا يوجد أي فرق بينهما وهما نفس الجهاز تماماً.</label>
+              </div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="question-card">
+              <h5 class="fw-bold text-warning mb-3">5. عنوان الـ MAC Address يتصف بـ:</h5>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q5" value="A" id="q5a" required>
+                <label class="form-check-label" for="q5a">أنه عنوان منطقي متغير يتغير عند التنقل من شبكة لأخرى.</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q5" value="B" id="q5b">
+                <label class="form-check-label" for="q5b">أنه عنوان فيزيائي حقيقي ثابت محفور على كارت الشبكة للمصنع.</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="q5" value="C" id="q5c">
+                <label class="form-check-label" for="q5c">أنه اسم نطاق مثل (google.com).</label>
+              </div>
+            </div>
+
+            <!-- Game Section -->
+            <hr class="my-5 border-secondary">
+
+            <div class="question-card border-info">
+              <h4 class="text-info fw-bold mb-2"><i class="fa-solid fa-gamepad me-2"></i>لعبة التوصيل التعليمية</h4>
+              <p class="text-light opacity-75 mb-3">
+                👉 <strong>طريقة اللعب:</strong> اضغط على المصطلح باللون الأزرق ليتحدد بالأصفر، ثم اضغط على المكان المخصص له في القائمة المقابلة لنقله إليها.
+              </p>
+
+              <div class="row g-3 my-2">
+                <!-- المصطلحات -->
+                <div class="col-md-5">
+                  <h6 class="fw-bold mb-3 text-center">المصطلحات (اضغط لتحديد المصطلح):</h6>
+                  <div class="d-flex flex-column gap-2" id="sourceContainer">
+                    <div class="drag-item text-center" id="item-LAN" onclick="selectItem(this)">LAN</div>
+                    <div class="drag-item text-center" id="item-WAN" onclick="selectItem(this)">WAN</div>
+                    <div class="drag-item text-center" id="item-IP" onclick="selectItem(this)">IP Address</div>
+                    <div class="drag-item text-center" id="item-Router" onclick="selectItem(this)">Router</div>
+                  </div>
+                </div>
+
+                <!-- الوظائف -->
+                <div class="col-md-7">
+                  <h6 class="fw-bold mb-3 text-center">الوصف المناسب (اضغط هنا لتنزيل المصطلح):</h6>
+                  <div class="d-flex flex-column gap-3">
+                    
+                    <div>
+                      <small class="text-light opacity-75">1. شبكة واسعة تغطي دول ومدن مختلفة مثل الإنترنت:</small>
+                      <div class="matching-box mt-1" id="target-WAN" onclick="placeSelectedItem(this, 'WAN')">
+                        <span class="placeholder-text text-muted">اضغط هنا لإدراج المصطلح</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <small class="text-light opacity-75">2. شبكة محلية داخل مبنى واحد أو مدرسة:</small>
+                      <div class="matching-box mt-1" id="target-LAN" onclick="placeSelectedItem(this, 'LAN')">
+                        <span class="placeholder-text text-muted">اضغط هنا لإدراج المصطلح</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <small class="text-light opacity-75">3. جهاز يربط بين شبكات مختلفة ويوجه البيانات عبر الإنترنت:</small>
+                      <div class="matching-box mt-1" id="target-Router" onclick="placeSelectedItem(this, 'Router')">
+                        <span class="placeholder-text text-muted">اضغط هنا لإدراج المصطلح</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <small class="text-light opacity-75">4. عنوان منطقي ينظم تواصل الأجهزة عبر الإنترنت ويستند لموقعك:</small>
+                      <div class="matching-box mt-1" id="target-IP" onclick="placeSelectedItem(this, 'IP')">
+                        <span class="placeholder-text text-muted">اضغط هنا لإدراج المصطلح</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-custom w-100 fs-5 mt-4">
+              <i class="fa-solid fa-paper-plane me-2"></i>إنهاء الاختبار وإرسال النتيجة
+            </button>
+          </form>
+
+          <!-- Result Modal/Card -->
+          <div id="resultBox" class="text-center py-5 d-none">
+            <i class="fa-solid fa-circle-check text-success display-1 mb-3"></i>
+            <h2 class="fw-bold">تم إرسال إجابتك بنجاح!</h2>
+            <h4 class="mt-3">درجتك هي: <span id="userScore" class="text-info fw-bold"></span> / 100</h4>
+            <p class="text-muted mt-2">شكراً لمشاركتك، تم حفظ النتيجة في لوحة تحكم الأدمن.</p>
+          </div>
+
+        </div>
+        
+        <div class="footer-credits py-3 border-top border-secondary">
+          تم إنشاء الموقع من Eng Ammar
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Modal -->
+<div class="modal fade" id="adminModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-header-title fw-bold text-info"><i class="fa-solid fa-user-gear me-2"></i>لوحة تحكم الأدمن</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Login View -->
+        <div id="adminLoginView" class="col-md-6 mx-auto py-4">
+          <div class="mb-3">
+            <label class="form-label">اسم المستخدم</label>
+            <input type="text" id="adminUser" class="form-control" placeholder="أدخل اسم الأدمن">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">كلمة المرور</label>
+            <input type="password" id="adminPass" class="form-control" placeholder="أدخل كلمة المرور">
+          </div>
+          <button class="btn btn-info w-100 fw-bold" onclick="loginAdmin()">تسجيل الدخول</button>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="adminDashboardView" class="d-none">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">نتائج الطلاب المُسجلة:</h5>
+            <div>
+              <button class="btn btn-sm btn-success me-2" onclick="exportToCSV()"><i class="fa-solid fa-file-excel me-1"></i>تصدير Excel</button>
+              <button class="btn btn-sm btn-danger" onclick="clearResults()"><i class="fa-solid fa-trash me-1"></i>مسح النتائج</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-dark table-striped table-bordered text-center align-middle">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>الاسم</th>
+                  <th>الفرقة</th>
+                  <th>الشعبة</th>
+                  <th>الفرع</th>
+                  <th>الهاتف</th>
+                  <th>الدرجة</th>
+                  <th>التاريخ</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody">
+                <!-- Data inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  let selectedElement = null;
+  const gameAnswers = {};
+
+  // Touch/Click matching system
+  function selectItem(el) {
+    document.querySelectorAll('.drag-item').forEach(item => item.classList.remove('selected'));
+    
+    if (selectedElement === el) {
+      selectedElement = null;
+      return;
+    }
+    
+    selectedElement = el;
+    el.classList.add('selected');
+  }
+
+  function placeSelectedItem(targetEl, targetKey) {
+    if (!selectedElement) return;
+
+    const termText = selectedElement.innerText;
+    const termId = selectedElement.id.replace('item-', '');
+
+    // Clear previous text
+    targetEl.innerHTML = `<div class="drag-item text-center w-100">${termText}</div>`;
+    
+    // Store answer
+    gameAnswers[targetKey] = termId;
+
+    // Remove selected style
+    selectedElement.classList.remove('selected');
+    selectedElement.style.opacity = "0.4";
+    selectedElement.style.pointerEvents = "none";
+    selectedElement = null;
+  }
+
+  // Handle Submission
+  function handleFormSubmit(e) {
+    e.preventDefault();
+
+    let score = 0;
+
+    // Grade MCQs (15 points each)
+    if (document.querySelector('input[name="q1"]:checked')?.value === 'A') score += 15;
+    if (document.querySelector('input[name="q2"]:checked')?.value === 'PAN') score += 15;
+    if (document.querySelector('input[name="q3"]:checked')?.value === 'MAN') score += 15;
+    if (document.querySelector('input[name="q4"]:checked')?.value === 'A') score += 15;
+    if (document.querySelector('input[name="q5"]:checked')?.value === 'B') score += 15;
+
+    // Grade Matching Game (6.25 points each -> total 25 points)
+    if (gameAnswers['WAN'] === 'WAN') score += 6.25;
+    if (gameAnswers['LAN'] === 'LAN') score += 6.25;
+    if (gameAnswers['Router'] === 'Router') score += 6.25;
+    if (gameAnswers['IP'] === 'IP') score += 6.25;
+
+    score = Math.round(score);
+
+    const studentData = {
+      name: document.getElementById('studentName').value,
+      grade: document.getElementById('studentGrade').value,
+      dept: document.getElementById('studentDept').value,
+      branch: document.getElementById('studentBranch').value,
+      phone: document.getElementById('studentPhone').value,
+      score: score,
+      date: new Date().toLocaleString('ar-EG')
+    };
+
+    // Save locally
+    let results = JSON.parse(localStorage.getItem('quiz_results') || '[]');
+    results.push(studentData);
+    localStorage.setItem('quiz_results', JSON.stringify(results));
+
+    // Show Result
+    document.getElementById('quizForm').classList.add('d-none');
+    document.getElementById('resultBox').classList.remove('d-none');
+    document.getElementById('userScore').innerText = score;
+  }
+
+  // Admin Modal Functions
+  const adminModal = new bootstrap.Modal(document.getElementById('adminModal'));
+
+  function openAdminModal() {
+    adminModal.show();
+  }
+
+  function loginAdmin() {
+    const u = document.getElementById('adminUser').value;
+    const p = document.getElementById('adminPass').value;
+
+    if (u === 'Ammar' && p === '7676') {
+      document.getElementById('adminLoginView').classList.add('d-none');
+      document.getElementById('adminDashboardView').classList.remove('d-none');
+      loadAdminData();
+    } else {
+      alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
+    }
+  }
+
+  function loadAdminData() {
+    const results = JSON.parse(localStorage.getItem('quiz_results') || '[]');
+    const tbody = document.getElementById('adminTableBody');
+    tbody.innerHTML = '';
+
+    if (results.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="text-muted">لا يوجد نتائج مسجلة حتى الآن</td></tr>';
+      return;
+    }
+
+    results.forEach((item, idx) => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${idx + 1}</td>
+          <td class="fw-bold">${item.name}</td>
+          <td>${item.grade}</td>
+          <td>${item.dept}</td>
+          <td>${item.branch}</td>
+          <td>${item.phone}</td>
+          <td><span class="badge bg-info fs-6">${item.score} / 100</span></td>
+          <td><small>${item.date}</small></td>
+        </tr>
+      `;
+    });
+  }
+
+  function clearResults() {
+    if (confirm('هل أنت تأكد من مسح جميع النتائج؟')) {
+      localStorage.removeItem('quiz_results');
+      loadAdminData();
+    }
+  }
+
+  function exportToCSV() {
+    const results = JSON.parse(localStorage.getItem('quiz_results') || '[]');
+    if (results.length === 0) {
+      alert('لا توجد بيانات لتصديرها!');
+      return;
+    }
+
+    let csvContent = "\uFEFFالاسم,الفرقة,الشعبة,الفرع,الهاتف,الدرجة,التاريخ\n";
+    results.forEach(r => {
+      csvContent += `"${r.name}","${r.grade}","${r.dept}","${r.branch}","${r.phone}","${r.score}","${r.date}"\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "نتائج_اختبار_الشبكات.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+</script>
+
+</body>
+</html>
